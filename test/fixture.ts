@@ -19,7 +19,7 @@ export interface Fixture {
 }
 
 export async function buildFixture(): Promise<Fixture> {
-  const repo = mkdtempSync(join(tmpdir(), "pr-review-fixture-"));
+  const repo = mkdtempSync(join(tmpdir(), "pr-guide-fixture-"));
   const git = (...args: string[]) => $`git -C ${repo} ${args}`.env({ ...process.env, GIT_TERMINAL_PROMPT: "0" }).quiet();
   const write = (path: string, content: string | Uint8Array) => Bun.write(join(repo, path), content);
 

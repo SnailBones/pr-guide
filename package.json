@@ -1,5 +1,5 @@
 {
-  "name": "pr-review-tool",
+  "name": "pr-guide",
   "private": true,
   "scripts": {
     "test": "bun test",

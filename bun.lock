@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "pr-review-tool",
+      "name": "pr-guide",
       "dependencies": {
         "diff": "^9.0.0",
         "marked": "^18.0.11",

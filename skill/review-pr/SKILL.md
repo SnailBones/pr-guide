@@ -4,7 +4,7 @@ description: Generate an annotated review page for a GitHub PR. Use when
   given a PR URL or owner/repo#N and asked to review or explain it.
 ---
 
-The tool lives at TOOL=/path/to/pr-review-tool (contract: its
+The tool lives at TOOL=/path/to/pr-guide (contract: its
 docs/REFERENCE.md).
 Reconstruct the PR's stated intent from its own record — you are writing in
 the author's voice, not critiquing. Don't add reviewer commentary unless the
