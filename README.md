@@ -3,10 +3,9 @@
 a pr, eh sherpa?
 ¿ɐdɹǝɥs ɥǝ 'ɹd ɐ
 
-ai-powered x-ray vision for pr reviews
 
 In 2026, reviewing code is the bottleneck.
-This project is my attempt at vibe-coding tool to make code reviews a bit faster and more effective.
+Here's my attempt at vibe-coding tool to make code reviews a bit faster and more effective.
 It provides a diff viewer with AI commentary explaining the reasons for each change,
 and walking the reviewer through the changes by feature, not just file order.
 
