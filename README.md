@@ -1,8 +1,4 @@
-# pr guide
-
 a pr, eh sherpa?
-¿ɐdɹǝɥs ɥǝ 'ɹd ɐ
-
 
 In 2026, reviewing code is the bottleneck.
 Here's my attempt at vibe-coding tool to make code reviews a bit faster and more effective.
