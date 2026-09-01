@@ -1,0 +1,143 @@
+/* Styles for the annotated review page; inlined into review.html by generate.ts. */
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body { font: 14px/1.45 -apple-system, "Segoe UI", sans-serif; color: #1f2328; display: flex; flex-direction: column; }
+/* Annotations on the left, diff on the right. The panes fill the viewport
+   below the topbar exactly, so each scrolls internally (never the page). */
+.layout { display: grid; grid-template-columns: minmax(360px, 520px) 1fr; flex: 1; min-height: 0; }
+#diff { overflow-y: scroll; padding: 16px; }
+#panel { overflow-y: auto; padding: 16px; background: #f6f8fa; border-right: 1px solid #d1d9e0; }
+/* Always-visible scrollbars (Chrome's overlay scrollbars hide when idle). */
+#diff::-webkit-scrollbar, #panel::-webkit-scrollbar { width: 12px; }
+#diff::-webkit-scrollbar-track, #panel::-webkit-scrollbar-track { background: #f6f8fa; }
+#diff::-webkit-scrollbar-thumb, #panel::-webkit-scrollbar-thumb { background: #cdd5dd; border-radius: 6px; border: 2px solid #f6f8fa; }
+#diff::-webkit-scrollbar-thumb:hover, #panel::-webkit-scrollbar-thumb:hover { background: #a9b4bf; }
+
+.topbar { padding: 8px 16px; background: #1f2328; color: #fff; font-size: 13px; display: flex; gap: 16px; align-items: baseline; flex-shrink: 0; }
+.topbar code { color: #9dd1ff; }
+.topbar a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+.topbar a:hover { color: #9dd1ff; }
+.topbar .warn { color: #ffd88a; }
+.topbar button { border: 1px solid #6e7781; background: #2d333b; color: #fff; border-radius: 6px; padding: 1px 10px; cursor: pointer; font-size: 12px; }
+.topbar button:hover:not(:disabled) { background: #444c56; }
+.topbar button:disabled { cursor: default; border-color: #3d444d; color: #7ee787; }
+#revcount { margin-left: auto; }
+
+/* --- diff pane --- */
+.file { border: 1px solid #d1d9e0; border-radius: 6px; margin-bottom: 16px; background: #fff; }
+/* Sticky within #diff's scrollport, under the focus bar (z-index 4). */
+.fhead { padding: 8px 12px; background: #f6f8fa; font-size: 13px; border-radius: 6px 6px 0 0; display: flex; align-items: center; position: sticky; top: 0; z-index: 3; box-shadow: 0 1px 0 #d1d9e0; }
+.fhead code { font-weight: 600; }
+/* Minimization is the reviewed checkbox — no separate expand/collapse control.
+   Focus mode and anchor jumps (.peek) still reveal rows inside a reviewed file. */
+.file.reviewed .fbody { display: none; }
+.file.peek .fbody, body.focused .file.keep .fbody { display: block; }
+.stat { color: #59636e; font-size: 12px; margin-left: 8px; }
+.rn { color: #59636e; font-size: 12px; }
+.hunk { border-top: 1px solid #d1d9e0; }
+.hh { padding: 4px 12px; background: #ddf4ff; color: #59636e; font: 12px ui-monospace, monospace; }
+table { border-collapse: collapse; width: 100%; }
+td.g { width: 26px; user-select: none; text-align: center; vertical-align: top; }
+td.c pre { font: 12px/1.6 ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; }
+tr.add { background: #dafbe1; }
+tr.del { background: #ffebe9; }
+/* Intraline (word-level) emphasis inside changed line pairs. */
+td.c mark { color: inherit; padding: 0; border-radius: 2px; background: transparent; }
+tr.del mark.ind { background: rgba(255, 129, 130, 0.4); }
+tr.add mark.ina { background: rgba(46, 160, 67, 0.4); }
+
+/* Line numbers are hidden unless body.linenums (toggled in the topbar). */
+td.n { display: none; }
+body.linenums td.n { display: table-cell; width: 1%; min-width: 42px; padding: 0 8px; text-align: right; color: #8c959f; font: 12px/1.6 ui-monospace, monospace; user-select: none; vertical-align: top; }
+body.linenums tr.add td.n { background: #aceebb; }
+body.linenums tr.del td.n { background: #ffcecb; }
+
+/* --- annotation linkage --- */
+/* Overlapping annotations render as side-by-side stripe bands (--mkshadow is
+   a stack of inset shadows, one 3px band per annotation, built per row). */
+tr[data-anns] td.c { box-shadow: var(--mkshadow); }
+tr[data-anns] { cursor: pointer; }
+tr[data-anns]:hover td.c { filter: brightness(0.96); }
+tr.flash { animation: flash 1.6s; }
+@keyframes flash { 0%, 60% { background: #fff8c5; } }
+/* Gutter badges carry claim ids ("3b" = annotation 3, bullet b); overlapping
+   annotations stack one badge each, each clickable to its own card. */
+.mark { border: 0; min-width: 20px; height: 14px; border-radius: 7px; cursor: pointer; padding: 0 4px;
+  color: #fff; font: 700 9px/14px sans-serif; background: var(--mk); display: block; margin: 1px auto; }
+.divider { margin: 28px 0 12px; padding-top: 16px; border-top: 2px dashed #d1d9e0; font-size: 16px; }
+.divider span { font-size: 13px; color: #59636e; font-weight: 400; }
+
+/* --- focus mode --- */
+/* Focus mode hides unrelated files; row-level mode (Show uncovered) also hides
+   unrelated hunks/rows within the kept files. */
+body.focused #diff .file:not(.keep), body.focused #diff .divider { display: none; }
+body.focused.rows-only #diff .hunk:not(.keep), body.focused.rows-only #diff tr:not(.keep) { display: none; }
+#focusbar { display: none; position: sticky; top: 0; z-index: 4; margin: -16px -16px 16px; padding: 8px 16px; background: #fff8c5; border-bottom: 1px solid #d4a72c; font-size: 13px; align-items: center; gap: 10px; }
+body.focused #focusbar { display: flex; }
+#focusbar button { border: 1px solid #d4a72c; background: #fff; border-radius: 6px; padding: 2px 10px; cursor: pointer; font-size: 12px; }
+
+/* --- annotation cards --- */
+.card { background: #fff; border: 1px solid #d1d9e0; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; cursor: pointer; }
+.card.active { border-color: #0969da; box-shadow: 0 0 0 2px #0969da33; }
+.card header { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+.card h3 { font-size: 14px; }
+.badge { color: #fff; font: 700 11px/20px sans-serif; min-width: 20px; height: 20px; border-radius: 50%; text-align: center; flex-shrink: 0; background: var(--ac); }
+.drift { color: #9a6700; font-weight: 700; }
+sup.drift { margin-left: 1px; cursor: help; }
+/* Inline anchors: phrases in the body that jump to their lines.
+   Visibly marked at rest, clearly highlighted on hover. */
+.iref { color: #0550ae; background: #0969da14; border-bottom: 1.5px solid #0969da88; padding: 0 3px; border-radius: 3px; cursor: pointer; }
+.iref:hover { background: #b6e3ff; border-bottom-color: #0550ae; }
+.iref.dead { color: #59636e; background: #6e778114; border-bottom-style: dotted; cursor: not-allowed; }
+/* Resolved, but to lines outside the rendered hunks — clicking jumps to the file. */
+.iref.nsd { border-bottom-style: dashed; }
+
+/* --- go-to-definition --- */
+a.def { color: inherit; text-decoration: none; }
+a.def:hover { text-decoration: underline dotted; cursor: pointer; }
+.defpop { position: fixed; z-index: 20; max-width: 640px; background: #fff; border: 1px solid #d1d9e0;
+  border-radius: 6px; box-shadow: 0 8px 24px rgba(31, 35, 40, 0.15); }
+.defpop-head { padding: 4px 10px; background: #f6f8fa; font: 11px ui-monospace, monospace; color: #59636e;
+  border-bottom: 1px solid #d1d9e0; border-radius: 6px 6px 0 0; }
+.defpop-head span { color: #8c959f; }
+.defpop pre { padding: 8px 10px; font: 12px/1.6 ui-monospace, monospace; overflow-x: auto; max-width: 100%; }
+
+/* --- bidirectional hover highlighting ---
+   Highlighted (.hl) elements keep their normal appearance; everything else in
+   the counterpart pane dims. Containers holding a highlight get .has-hl. */
+body.dim-diff #diff .file:not(.has-hl) { opacity: 0.3; }
+/* A .hl file (whole-file anchor) stays fully lit; otherwise only .hl rows do. */
+body.dim-diff #diff .file.has-hl:not(.hl) tr:not(.hl) { opacity: 0.3; }
+body.dim-diff #diff .file.has-hl:not(.hl) .fhead { opacity: 0.55; }
+body.dim-panel #panel .card:not(.has-hl) { opacity: 0.3; }
+body.dim-panel #panel .card.has-hl .body li:not(.hl),
+body.dim-panel #panel .card.has-hl .body > p:not(:has(.hl)) { opacity: 0.4; }
+#diff .file, #panel .card { transition: opacity 0.12s; }
+.body p, .body ul { margin-bottom: 8px; font-size: 13px; }
+/* Bullets on numbered cards are lettered claims in the card's accent color
+   (--ac). Letters come from data-claim, stamped by the generator's single
+   parse walk — the same source the gutter badges use, so they can't disagree.
+   Nested items and general (anchor-less) cards keep plain list bullets. */
+.body ul { padding-left: 18px; }
+.body li { margin-bottom: 4px; }
+.card:not(.general) .body > ul { list-style: none; padding-left: 24px; }
+.card:not(.general) .body li[data-claim] { position: relative; padding: 1px 4px; border-radius: 4px; }
+.card:not(.general) .body li[data-claim]::before { content: attr(data-claim); position: absolute; left: -22px; top: 3px;
+  width: 16px; height: 16px; border: 1.5px solid var(--ac); border-radius: 50%; color: var(--ac);
+  font: 700 10px/13px sans-serif; text-align: center; }
+.body code { background: #eff1f3; padding: 1px 4px; border-radius: 4px; font-size: 92%; }
+.note { padding: 8px 12px; color: #59636e; font-size: 13px; }
+/* A hunkless file (binary, rename) counts as one coverage unit; unannotated
+   ones join "Show uncovered" and carry the same amber cue. */
+.note.unc { box-shadow: inset 3px 0 0 #d4a72c; }
+
+/* --- reviewed state --- */
+.check { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid #8c959f; background: #fff; cursor: pointer; flex-shrink: 0; padding: 0; color: transparent; font-size: 12px; line-height: 1; margin-left: auto; }
+.check:hover { border-color: #1a7f37; color: #1a7f37; }
+.check::before { content: "✓"; }
+.check.on { background: #1a7f37; border-color: #1a7f37; color: #fff; }
+.file.reviewed .fhead { opacity: 0.6; }
+.card.reviewed { opacity: 0.65; }
+.card.reviewed .body { display: none; }
+/* General comments (no anchors): preamble cards, nothing to focus in the diff. */
+.card.general { cursor: default; background: #fbfcfd; }

@@ -1,0 +1,23 @@
+# dependencies (bun install)
+node_modules/
+
+# runtime caches: clones of reviewed repos (--pr / fetch mode)
+repos/
+
+# generated review pages
+output/
+review/
+
+# environment
+.env
+.env.*
+
+# caches
+*.tsbuildinfo
+.eslintcache
+.cache/
+coverage/
+
+# editors / OS
+.idea/
+.DS_Store

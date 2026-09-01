@@ -1,0 +1,4 @@
+# Only the tool's own tests — repos/ holds cached clones of reviewed repos,
+# which carry their own (undownloadable) test suites.
+[test]
+root = "./test"
