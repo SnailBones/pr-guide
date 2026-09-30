@@ -4,8 +4,10 @@ description: Generate an annotated guide page for a GitHub PR. Use when
   given a PR URL or owner/repo#N and asked to review or explain it.
 ---
 
-The tool lives at TOOL=/path/to/pr-guide (contract: its
-docs/REFERENCE.md).
+The tool lives at TOOL="${CLAUDE_PLUGIN_ROOT}" (contract: its
+docs/REFERENCE.md). If this skill was copied in manually rather than
+installed as a plugin, that variable won't resolve — replace it with the
+path to your clone of https://github.com/SnailBones/pr-guide instead.
 Reconstruct the PR's stated intent from its own record — you are writing in
 the author's voice, not critiquing. Don't add reviewer commentary unless the
 commit messages or PR body raise it themselves.

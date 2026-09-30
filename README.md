@@ -20,11 +20,31 @@ build step — open it straight from disk.
 
 ## Using with Claude
 
-To set this up with Claude Code:
+This repo is also a Claude Code plugin, self-hosting its own marketplace —
+install and update it with Claude Code's plugin commands, no manual cloning
+or path-filling required:
+
+```bash
+claude plugin marketplace add SnailBones/pr-guide
+claude plugin install pr-guide
+```
+
+Claude Code installs Bun's dependencies (`diff`, `marked`, `shiki`)
+automatically on first use. Update later with:
+
+```bash
+claude plugin update pr-guide
+```
+
+Then, in any Claude Code session: `/pr-guide <pr-url>`.
+
+### Manual install
+
+To run from a working clone instead (e.g. for local development on the
+tool itself):
 
 1. Clone this repo somewhere permanent and run `bun install` in it.
-2. Copy the bundled skill into your skills directory and fill in your
-   clone's path where it says `TOOL=/path/to/pr-guide`:
+2. Copy the bundled skill into your skills directory:
 
    ```bash
    cp -r skill/pr-guide ~/.claude/skills/
@@ -32,7 +52,10 @@ To set this up with Claude Code:
 
    That makes it available in every session; to share it with a team,
    copy it to `<project>/.claude/skills/pr-guide` instead.
-3. In any Claude Code session: `/pr-guide <pr-url>`.
+3. Edit the copied `SKILL.md` and replace `TOOL="${CLAUDE_PLUGIN_ROOT}"`
+   with the path to your clone — that variable only resolves for an
+   installed plugin.
+4. In any Claude Code session: `/pr-guide <pr-url>`.
 
 ## Requirements
 

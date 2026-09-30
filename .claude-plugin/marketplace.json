@@ -1,0 +1,13 @@
+{
+  "name": "pr-guide",
+  "owner": { "name": "Aidan Hendrickson" },
+  "description": "Self-hosted marketplace for the pr-guide plugin.",
+  "plugins": [
+    {
+      "name": "pr-guide",
+      "source": ".",
+      "description": "Generate an annotated guide page for a GitHub PR.",
+      "version": "1.0.0"
+    }
+  ]
+}

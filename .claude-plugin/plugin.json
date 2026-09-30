@@ -1,0 +1,10 @@
+{
+  "name": "pr-guide",
+  "displayName": "PR Guide",
+  "version": "1.0.0",
+  "description": "Generate an annotated guide page for a GitHub PR: a narrated walkthrough of the diff in the author's voice, not a critique.",
+  "author": { "name": "Aidan Hendrickson" },
+  "homepage": "https://github.com/SnailBones/pr-guide",
+  "repository": "https://github.com/SnailBones/pr-guide",
+  "skills": ["./skill/"]
+}
