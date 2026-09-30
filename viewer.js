@@ -1,4 +1,4 @@
-// Client-side behavior for the annotated review page. Inlined into review.html
+// Client-side behavior for the annotated guide page. Inlined into review.html
 // by generate.ts, which prepends a `DATA` constant with the page's data:
 //   ranges     per annotation, per anchor: { file, lines, b?, all? } jump
 //              targets (head-side line numbers; `b` = merge-base-side numbers

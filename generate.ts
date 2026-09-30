@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Annotated review viewer generator.
+ * Annotated guide viewer generator.
  *
  * Reads an annotations file (author-side annotations with `path:start-end@commit`
  * line anchors and `path@commit` whole-file anchors) plus a git diff, and emits a
@@ -846,13 +846,13 @@ function renderPage(ctx: PageContext): string {
     .replace(/\u2029/g, "\\u2029");
 
   return `<!doctype html>
-<html><head><meta charset="utf-8"><title>Review: ${esc(ctx.label)}</title>
+<html><head><meta charset="utf-8"><title>Guide: ${esc(ctx.label)}</title>
 <style>
 ${ctx.viewerCss}
 </style></head>
 <body>
 <div class="topbar">
-  <span>Annotated review</span>
+  <span>Annotated guide</span>
   <span>${ctx.labelUrl ? `<a href="${esc(ctx.labelUrl)}" target="_blank" rel="noreferrer">${esc(ctx.label)}</a>` : esc(ctx.label)} — <code>${esc(ctx.base.slice(0, 24))}</code> … <code>${esc(ctx.head)}</code> (${esc(headSha.slice(0, 9))})</span>
   <span>${files.length} files, ${annotations.length} annotations</span>
   <span class="${allCovered ? "" : "warn"}">coverage: ${coverage.covered}/${coverage.total} changes</span>

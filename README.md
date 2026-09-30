@@ -5,7 +5,7 @@ Here's my attempt at vibe-coding tool to make code reviews a bit faster and more
 It provides a diff viewer with AI commentary explaining the reasons for each change,
 and walking the reviewer through the changes by feature, not just file order.
 
-Generates a self-contained, two-pane HTML review page for a git diff:
+Generates a self-contained, two-pane HTML guide page for a git diff:
 annotations on the left in narrative order, files on the right,
 linked both ways.
 
@@ -27,12 +27,12 @@ To set this up with Claude Code:
    clone's path where it says `TOOL=/path/to/pr-guide`:
 
    ```bash
-   cp -r skill/review-pr ~/.claude/skills/
+   cp -r skill/pr-guide ~/.claude/skills/
    ```
 
    That makes it available in every session; to share it with a team,
-   copy it to `<project>/.claude/skills/review-pr` instead.
-3. In any Claude Code session: `/review-pr <pr-url>`.
+   copy it to `<project>/.claude/skills/pr-guide` instead.
+3. In any Claude Code session: `/pr-guide <pr-url>`.
 
 ## Requirements
 

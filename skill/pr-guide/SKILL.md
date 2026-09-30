@@ -1,6 +1,6 @@
 ---
-name: review-pr
-description: Generate an annotated review page for a GitHub PR. Use when
+name: pr-guide
+description: Generate an annotated guide page for a GitHub PR. Use when
   given a PR URL or owner/repo#N and asked to review or explain it.
 ---
 
@@ -24,14 +24,16 @@ commit messages or PR body raise it themselves.
    before writing about it.
 4. Write `annotations.md` (format: "Annotations format" in the tool's
    docs/REFERENCE.md):
-   a short scope note first, then one `##` section per discrete change,
-   citing its commit hash(es); an intent paragraph paraphrasing the
-   author's why, then bullets anchoring the how into the diff. Anchor at
-   the head commit; anchor deleted code at a pre-deletion commit. The
-   anchor phrase must be the claim itself, not filler like "here". VERIFY
-   every line range with `git -C "$CACHE_DIR" show <sha>:<path> | sed -n
-   '<n>,<m>p'` before writing it — a wrong anchor is worse than none. If a
-   change has no recorded intent, describe what it does; don't invent why.
+   a short scope note first, then one `##` section per discrete change; an
+   intent paragraph paraphrasing the author's why, then bullets anchoring
+   the how into the diff. Anchor at the head commit; anchor deleted code at
+   a pre-deletion commit. The anchor phrase must be the claim itself, not
+   filler like "here". VERIFY every line range with `git -C "$CACHE_DIR"
+   show <sha>:<path> | sed -n '<n>,<m>p'` before writing it — a wrong anchor
+   is worse than none. If a change has no recorded intent, describe what it
+   does; don't invent why. Commit hashes are only for internal use (looking
+   up diffs, resolving anchors) — never mention a commit hash in the
+   section headings, intent paragraphs, or bullets themselves.
 5. Generate:
    `bun "$TOOL/generate.ts" --pr "<pr>" --annotations <file> --out <file>`.
    Fix every anchor warning the CLI prints and regenerate. Aim for full
