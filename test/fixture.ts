@@ -129,6 +129,9 @@ Touches the scoped package: [the loader constants](packages/@scope/pkg/index.ts:
 ## Narrow overlap (ddd4444)
 
 - [Just the changed call](src/util.ts:6-6@${headSha}) overlaps the broad sweep.
+- Routes like /benchmarks/<id>/solutions/<title> are prose, [not markup](src/util.ts:6-6@${headSha}); a backticked \`<code>\` placeholder is fine.
+
+<div class="smuggled">a block of raw HTML</div>
 `);
 
   return { repo, annotationsFile, baseSha, midSha, headSha };

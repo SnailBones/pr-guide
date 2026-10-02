@@ -49,6 +49,10 @@ Paths may contain `@` (scoped packages). Anchors inside code fences or
 codespans are examples, not anchors. Anchoring deleted code works: anchor the
 old lines at a pre-deletion commit and they land on the diff's deleted rows.
 
+Annotation text is prose, never markup: raw HTML in it (a placeholder like
+`<id>`, a pasted tag) is rendered as escaped text and the CLI warns, naming the
+section. Write placeholders as `{id}` or inside backticks.
+
 ## Viewer features
 
 - **Anchor resolution across commits**: anchor lines are positionally mapped

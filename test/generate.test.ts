@@ -126,6 +126,18 @@ test("intraline word-level marks on paired changed lines", () => {
   expect(html).toContain('<mark class="ina">');
 });
 
+test("raw HTML in annotation text is escaped, not emitted, and warned about", () => {
+  expect(html.match(/<title/g)!.length).toBe(1); // only the page's own; a live <title> in a card swallows the diff
+  expect(html).toContain("/benchmarks/&lt;id&gt;/solutions/&lt;title&gt;");
+  expect(html).toContain("&lt;div class=&quot;smuggled&quot;&gt;");
+  expect(html).not.toContain('<div class="smuggled">');
+  expect(html).toContain("tweak &lt;/script&gt; (bbb2222)</h3>"); // headings too
+  expect(stdout).toContain('raw HTML in annotation "Narrow overlap (ddd4444)" rendered as text');
+  expect(stdout).toContain('"<title>"');
+  expect(stdout).toContain('"<div class=\\"smuggled\\">a block of raw HTML</div>"');
+  expect(stdout).not.toContain("<code>"); // a backticked placeholder is a codespan, not HTML
+});
+
 test("inline DATA cannot terminate the script tag", () => {
   const dataLine = html.split("\n").find(l => l.startsWith("const DATA = "))!;
   expect(dataLine).toContain("\\u003c/script"); // the </script> in a title, escaped

@@ -179,6 +179,25 @@ function parseAnchorHref(href: string): Omit<Anchor, "bullet"> | null {
  * are stamped onto the list-item tokens here and rendered from those stamps,
  * so gutter badges and card letters can't disagree.
  */
+// Raw HTML in annotation text (a placeholder like <id>, a pasted tag) is
+// rendered as escaped text, not emitted live: marked passes it through by
+// default, and one stray <title> in a card swallowed an entire diff pane.
+const proseRenderer = (): Renderer => {
+  const r = new Renderer();
+  r.html = ({ text }: Tokens.HTML | Tokens.Tag): string => esc(text);
+  return r;
+};
+
+// Every html token under these tokens, raw, for the parse-time warning.
+function findRawHtml(toks: Token[], out: string[] = []): string[] {
+  for (const t of toks) {
+    if (t.type === "html") out.push(t.raw.trim());
+    if (t.type === "list") for (const item of (t as Tokens.List).items) findRawHtml(item.tokens ?? [], out);
+    else if ("tokens" in t && t.tokens) findRawHtml(t.tokens, out);
+  }
+  return out;
+}
+
 function parseAnnotations(src: string): Annotation[] {
   const tokens = marked.lexer(src);
   const links = (tokens as Token[] & { links: unknown }).links;
@@ -219,11 +238,16 @@ function parseAnnotations(src: string): Annotation[] {
     };
     visit(sec.body, null, true);
 
+    const rawHtml = findRawHtml([...(sec.heading?.tokens ?? []), ...sec.body]);
+    if (rawHtml.length) {
+      console.warn(`warn: raw HTML in annotation "${title}" rendered as text (wrap placeholders in backticks): ${rawHtml.map(h => JSON.stringify(h)).join(", ")}`);
+    }
+
     const bodyTokens: Token[] = Object.assign([...sec.body], { links });
     const raw = (sec.heading?.raw ?? "") + sec.body.map(t => t.raw).join("");
     out.push({
       title,
-      titleHtml: sec.heading ? (marked.parseInline(sec.heading.text) as string) : title,
+      titleHtml: sec.heading ? (marked.parseInline(sec.heading.text, { renderer: proseRenderer() }) as string) : title,
       bodyTokens,
       key: Bun.hash(raw).toString(36),
       anchors,
@@ -695,7 +719,7 @@ function renderPage(ctx: PageContext): string {
   function renderCard(ann: Annotation, ai: number): string {
     // Anchor links were stamped with their index at parse time; the renderer
     // pairs each with its resolution by that identity, not by scan order.
-    const renderer = new Renderer();
+    const renderer = proseRenderer();
     const origLink = renderer.link.bind(renderer);
     const origLi = renderer.listitem.bind(renderer);
     renderer.link = (token: Tokens.Link): string => {

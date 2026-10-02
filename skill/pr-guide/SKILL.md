@@ -30,9 +30,11 @@ commit messages or PR body raise it themselves.
    intent paragraph paraphrasing the author's why, then bullets anchoring
    the how into the diff. Anchor at the head commit; anchor deleted code at
    a pre-deletion commit. The anchor phrase must be the claim itself, not
-   filler like "here". VERIFY every line range with `git -C "$CACHE_DIR"
-   show <sha>:<path> | sed -n '<n>,<m>p'` before writing it — a wrong anchor
-   is worse than none. If a change has no recorded intent, describe what it
+   filler like "here". Never leave a `<word>` placeholder outside backticks
+   (write `{id}` or wrap it in backticks): the tool escapes raw HTML and
+   warns, but the source should be clean. VERIFY every line range with
+   `git -C "$CACHE_DIR" show <sha>:<path> | sed -n '<n>,<m>p'` before
+   writing it — a wrong anchor is worse than none. If a change has no recorded intent, describe what it
    does; don't invent why. Commit hashes are only for internal use (looking
    up diffs, resolving anchors) — never mention a commit hash in the
    section headings, intent paragraphs, or bullets themselves.
