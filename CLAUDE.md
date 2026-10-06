@@ -8,7 +8,13 @@ that file in sync when changing behavior.
 Layout: `generate.ts` is the whole generator (CLI, PR fetching, diff parsing,
 anchor resolution, rendering); `viewer.css` / `viewer.js` are inlined into
 the generated page; tests live in `test/` (`bunfig.toml` scopes `bun test`
-there so the cached clones under `repos/` don't leak their own suites in).
+there). `SKILL.md` sits at the repo root on purpose: the root *is* the
+Claude Code skill directory, so a plugin install, the Docker Sandboxes
+skills store, and a manual symlink all ship the tool with the skill and
+find it via `${CLAUDE_SKILL_DIR}`. Don't move it into a subfolder. The tool
+must stay runnable from a read-only location — runtime writes go to the
+clone cache under `~/.cache/pr-guide` (see docs/REFERENCE.md), never
+beside the source.
 
 ## Verifying changes to the tool
 

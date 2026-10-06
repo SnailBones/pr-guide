@@ -9,7 +9,7 @@ page does. For what the project is and Claude setup, see the
 ```bash
 bun install                       # once: shiki, marked, diff
 
-# One step, straight from a GitHub PR (clones/fetches into repos/<owner>__<repo>):
+# One step, straight from a GitHub PR (clones/fetches into the clone cache, below):
 bun generate.ts --pr <pr-url | owner/repo#N> --annotations <file> --out <file>
 
 # Resolve + fetch only — prints JSON (number, title, url, state, baseRefName,
@@ -31,8 +31,11 @@ Both modes diff against the merge-base of base and head, so a base branch
 that has moved on since the branch point doesn't pull unrelated changes
 into the page.
 
-`repos/` (the PR-mode clone cache) and `output/` are created at runtime and
-gitignored.
+PR mode keeps its clones in `$PR_GUIDE_CACHE_DIR/repos/<owner>__<repo>` if
+that variable is set, else `$XDG_CACHE_HOME/pr-guide/repos/<owner>__<repo>`
+(default `~/.cache/pr-guide/repos/`). The cache deliberately lives outside
+the tool's own directory so the tool can be installed somewhere read-only,
+such as a plugin cache or a Docker Sandboxes skills store.
 
 ## Annotations format
 

@@ -17,7 +17,8 @@
  *
  * Usage:
  *   bun generate.ts fetch <pr-url | owner/repo#N>
- *       Resolve a GitHub PR, clone/fetch it into repos/<owner>__<repo>, and
+ *       Resolve a GitHub PR, clone/fetch it into the clone cache (see
+ *       CACHE_DIR below), and
  *       print a JSON description (number, title, url, state, baseRefName,
  *       baseRefOid, headRefOid, owner, repo, cacheDir, localHeadRef).
  *   bun generate.ts --pr <pr-url | owner/repo#N> [--annotations <file>] [--out <file>]
@@ -29,6 +30,7 @@
  */
 
 import { $ } from "bun";
+import { homedir } from "node:os";
 import { join, resolve as resolvePath } from "node:path";
 import { parseArgs } from "node:util";
 import { createHighlighter, type Highlighter } from "shiki";
@@ -36,6 +38,12 @@ import { marked, Renderer, type Token, type Tokens } from "marked";
 import { diffWordsWithSpace } from "diff";
 
 const TOOL_DIR = import.meta.dir;
+/** Where PR mode keeps its clones: $PR_GUIDE_CACHE_DIR, else
+ * $XDG_CACHE_HOME/pr-guide (default ~/.cache/pr-guide). Deliberately not
+ * beside the tool — it may be installed somewhere read-only, such as a
+ * plugin cache or a Docker Sandboxes skills store. */
+const CACHE_DIR = process.env.PR_GUIDE_CACHE_DIR
+  || join(process.env.XDG_CACHE_HOME || join(homedir(), ".cache"), "pr-guide");
 
 // ---------- generic helpers ----------
 
@@ -905,7 +913,7 @@ interface PrInfo {
 }
 
 /**
- * Resolve a PR spec, clone/fetch its repo into repos/<owner>__<repo> (the
+ * Resolve a PR spec, clone/fetch its repo into CACHE_DIR/repos/<owner>__<repo> (the
  * "__" separator keeps foo-bar/baz and foo/bar-baz apart), and work out the
  * base commit the PR should be diffed against. For merged PRs the base
  * branch's tip already contains the head, so the true base is the merge
@@ -926,7 +934,7 @@ async function fetchPr(spec: string): Promise<PrInfo> {
     mergeCommit: { oid: string } | null;
   };
 
-  const cacheDir = join(TOOL_DIR, "repos", `${owner}__${repo}`);
+  const cacheDir = join(CACHE_DIR, "repos", `${owner}__${repo}`);
   if (!(await Bun.file(join(cacheDir, ".git", "HEAD")).exists())) {
     const clone = await $`git clone --quiet ${`https://github.com/${owner}/${repo}.git`} ${cacheDir}`.env(GIT_ENV).quiet().nothrow();
     if (clone.exitCode !== 0) throw new Error(`git clone of ${owner}/${repo} failed: ${clone.stderr.toString().trim()}`);

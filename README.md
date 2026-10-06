@@ -44,18 +44,37 @@ To run from a working clone instead (e.g. for local development on the
 tool itself):
 
 1. Clone this repo somewhere permanent and run `bun install` in it.
-2. Copy the bundled skill into your skills directory:
+2. Symlink the clone into your skills directory. The repo root *is* the
+   skill, and the skill finds the tool through `${CLAUDE_SKILL_DIR}`, so
+   nothing needs editing:
 
    ```bash
-   cp -r skill/pr-guide ~/.claude/skills/
+   ln -s /path/to/pr-guide ~/.claude/skills/pr-guide
    ```
 
-   That makes it available in every session; to share it with a team,
-   copy it to `<project>/.claude/skills/pr-guide` instead.
-3. Edit the copied `SKILL.md` and replace `TOOL="${CLAUDE_PLUGIN_ROOT}"`
-   with the path to your clone — that variable only resolves for an
-   installed plugin.
-4. In any Claude Code session: `/pr-guide <pr-url>`.
+   To share it with a team, link it at `<project>/.claude/skills/pr-guide`
+   instead. Don't keep both the plugin and a symlink installed at once —
+   the skill would be registered twice.
+3. In any Claude Code session: `/pr-guide <pr-url>`.
+
+### Docker Sandboxes
+
+A sandbox created with [Docker Sandboxes](https://docs.docker.com/ai/sandboxes/)
+(`sbx`) has its own Claude Code configuration, so a plugin installed on the
+host is invisible inside it. Use the shared skills store instead — it is
+linked read-only into every sandbox, current and future, at start:
+
+```bash
+sbx skills add SnailBones/pr-guide
+bun install --cwd "$(sbx skills ls --json | jq -r .store)/pr-guide"
+gh auth token | sbx secret set github    # once: lets `gh` authenticate inside sandboxes
+```
+
+The store is a plain clone and sandboxes can't write to it, so the
+`bun install` runs on the host and reaches every sandbox through the mount.
+Repeat those two lines after `sbx skills update pr-guide`. Running sandboxes
+pick the skill up on their next start. Inside a sandbox, PR clones go to
+`~/.cache/pr-guide` as they do anywhere else.
 
 ## Requirements
 
