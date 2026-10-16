@@ -1,7 +1,8 @@
 ---
 name: pr-guide
-description: Generate an annotated guide page for a GitHub PR. Use when
-  given a PR URL or owner/repo#N and asked to review or explain it.
+description: Generate an annotated walkthrough page for a GitHub PR so the
+  user can review it themselves. Use only when the user asks for a guide,
+  walkthrough, or annotated page for a PR.
 ---
 
 The tool lives at TOOL="${CLAUDE_SKILL_DIR}" — this skill's own directory,

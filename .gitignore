@@ -1,8 +1,6 @@
 # dependencies (bun install)
 node_modules/
 
-# runtime caches: clones of reviewed repos (--pr / fetch mode)
-repos/
 
 # generated review pages
 output/
